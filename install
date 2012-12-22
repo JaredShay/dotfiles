@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+# from http://errtheblog.com/posts/89-huba-huba
+
+home = File.expand_path('~')
+
+Dir['*'].each do |file|
+  next if file =~ /install/
+  if file =~ /bin/
+    target = File.join(home, file)
+  else
+    target = File.join(home, ".#{file}")
+  end
+
+  unless File.exists?(target)
+    `ln -s #{File.expand_path file} #{target}`
+  end
+end
