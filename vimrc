@@ -1,4 +1,22 @@
-call pathogen#infect()
+set nocompatible
+filetype off
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" Solarize color scheme
+Plugin 'altercation/vim-colors-solarized'
+
+" Coffee-script syntax
+Plugin 'kchmck/vim-coffee-script'
+
+" All plugins must be added before these two lines
+call vundle#end()
+filetype plugin indent on
 
 set nocp           " Disable vi compatibility, enables vim awesome
 set expandtab
