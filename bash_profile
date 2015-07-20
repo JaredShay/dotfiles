@@ -1,5 +1,11 @@
 export EDITOR=vim
-export PATH=/usr/local/bin:/usr/local/sbin:~/bin:$PATH
+
+export PATH="/usr/local/bin:/usr/local/sbin:~/bin:~/.rbenv/bin:$PATH"
+
+export NVM_DIR="/Users/jshay/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
 
 function _git_prompt() {
     local git_status="`git status -unormal 2>&1`"
