@@ -14,6 +14,9 @@ Plugin 'altercation/vim-colors-solarized'
 " Coffee-script syntax
 Plugin 'kchmck/vim-coffee-script'
 
+" Nerdtree for better file structure views
+Plugin 'scrooloose/nerdtree'
+
 " All plugins must be added before these two lines
 call vundle#end()
 filetype plugin indent on
@@ -41,7 +44,7 @@ if has("gui_running")
 end
 
 set t_Co=256
-set background=dark
+set background=light
 colorscheme solarized
 
 call togglebg#map("<F3>")
