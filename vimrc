@@ -50,6 +50,9 @@ colorscheme solarized
 " Syntax highlighting for Gemfiles
 autocmd BufNewFile,BufRead Gemfile set filetype=ruby
 
+" Syntax highlighting for bash_profile
+autocmd BufNewFile,BufRead bash_profile set filetype=sh
+
 call togglebg#map("<F3>")
 
 if has("mouse")
