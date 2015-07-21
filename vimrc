@@ -47,6 +47,9 @@ set t_Co=256
 set background=light
 colorscheme solarized
 
+" Syntax highlighting for Gemfiles
+autocmd BufNewFile,BufRead Gemfile set filetype=ruby
+
 call togglebg#map("<F3>")
 
 if has("mouse")
