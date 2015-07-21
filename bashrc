@@ -1,5 +1,8 @@
 source ~/.bash/git-completion.bash
 source ~/.bash/git-prompt.bash
+source ~/.bash/git-aliases.bash
+
+source ~/.bash/rails-aliases.bash
 
 export EDITOR=vim
 
@@ -12,5 +15,7 @@ export NVM_DIR="/Users/jshay/.nvm"
 export HISTCONTROL=erasedups
 export HISTSIZE=10000
 shopt -s histappend
+
+alias reload="source ~/.bash_profile"
 
 eval "$(rbenv init -)"
