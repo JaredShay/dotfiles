@@ -17,6 +17,12 @@ Plugin 'kchmck/vim-coffee-script'
 " Nerdtree for better file structure views
 Plugin 'scrooloose/nerdtree'
 
+" Ctrlsf for searching directly in vim
+Plugin 'dyng/ctrlsf.vim'
+
+" CtrlP for searching file paths
+Plugin 'kien/ctrlp.vim'
+
 " All plugins must be added before these two lines
 call vundle#end()
 filetype plugin indent on
@@ -76,3 +82,10 @@ cnoremap %% <C-R>=expand('%:h').'/'<cr>
 
 " Remove trailing white space on save
 autocmd BufWritePre * :%s/\s\+$//e
+
+" CtrlSF mappings
+nmap <C-f> <Plug>CtrlSFPrompt
+vmap <C-f> <Plug>CtrlSFVwordPath
+vmap <C-f>f <Plug>CtrlSFVwordExec
+
+let g:ctrlsf_default_root = 'project'

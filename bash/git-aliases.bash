@@ -12,6 +12,7 @@ alias gco='git checkout'
 alias gcob='git checkout -b'
 alias gamend='git commit --amend'
 alias grhh='git reset --hard HEAD'
+alias gpraise='git blame'
 
 # from http://haacked.com/archive/2014/07/28/github-flow-aliases/
 # Cleans up branches merged into master
