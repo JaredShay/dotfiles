@@ -21,7 +21,8 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'dyng/ctrlsf.vim'
 
 " CtrlP for searching file paths
-Plugin 'kien/ctrlp.vim'
+"Plugin 'kien/ctrlp.vim' - this is the original repo that went dark
+Plugin 'ctrlpvim/ctrlp.vim'
 
 " All plugins must be added before these two lines
 call vundle#end()
