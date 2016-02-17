@@ -92,6 +92,11 @@ vmap <C-f>f <Plug>CtrlSFVwordExec
 
 let g:ctrlsf_default_root = 'project'
 
+" CtrlP Settings
+" Use files from git, including untracked. Without this the plugin is too slow
+" on large repos.
+let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
+
 " NerdTree Settings
 " Open NerdTree at startup
 autocmd StdinReadPre * let s:std_in=1
