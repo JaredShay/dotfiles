@@ -91,3 +91,11 @@ vmap <C-f> <Plug>CtrlSFVwordPath
 vmap <C-f>f <Plug>CtrlSFVwordExec
 
 let g:ctrlsf_default_root = 'project'
+
+" NerdTree Settings
+" Open NerdTree at startup
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" Open with Ctrl+n
+map <C-n> :NERDTreeToggle<CR>
