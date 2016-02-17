@@ -79,7 +79,7 @@ set grepformat=%f:%l:%m
 map <F1> <Esc>
 imap <F1> <Esc>
 
-" Expand current directory.
+" Expand current directory with '%%'.
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 
 " Remove trailing white space on save
