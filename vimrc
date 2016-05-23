@@ -24,6 +24,15 @@ Plugin 'dyng/ctrlsf.vim'
 "Plugin 'kien/ctrlp.vim' - this is the original repo that went dark
 Plugin 'ctrlpvim/ctrlp.vim'
 
+" Handlebars syntax highligting
+Plugin 'mustache/vim-mustache-handlebars'
+
+" JSON syntax highligting
+Plugin 'elzr/vim-json'
+
+" Auto close tags
+Plugin 'alvan/vim-closetag'
+
 " All plugins must be added before these two lines
 call vundle#end()
 filetype plugin indent on
@@ -57,6 +66,12 @@ colorscheme solarized
 " Syntax highlighting for Gemfiles
 autocmd BufNewFile,BufRead Gemfile set filetype=ruby
 autocmd BufNewFile,BufRead *.gemfile set filetype=ruby
+
+" Activate Syntax highlighting for handlebars. This is from a vundle plugin
+let g:mustache_abbreviations = 1
+
+" Syntax highlighting for JSON files
+autocmd BufNewFile,BufRead *.json set filetype=json
 
 " Syntax highlighting for bash_profile
 autocmd BufNewFile,BufRead bash_profile set filetype=sh
@@ -104,3 +119,6 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 " Open with Ctrl+n
 map <C-n> :NERDTreeToggle<CR>
+
+" Set filetypes for autoclosing of tags
+let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.hbs,*.handlebars"
