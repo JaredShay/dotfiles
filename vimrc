@@ -17,21 +17,18 @@ Plugin 'kchmck/vim-coffee-script'
 " Nerdtree for better file structure views
 Plugin 'scrooloose/nerdtree'
 
-" Ctrlsf for searching directly in vim
-Plugin 'dyng/ctrlsf.vim'
-
 " CtrlP for searching file paths
 "Plugin 'kien/ctrlp.vim' - this is the original repo that went dark
 Plugin 'ctrlpvim/ctrlp.vim'
 
-" Handlebars syntax highligting
-Plugin 'mustache/vim-mustache-handlebars'
+" Ack Vim for using ack in vim
+Plugin 'mileszs/ack.vim'
 
 " JSON syntax highligting
 Plugin 'elzr/vim-json'
 
-" Auto close tags
-Plugin 'alvan/vim-closetag'
+" Lots of good go stuff
+Plugin 'fatih/vim-go'
 
 " All plugins must be added before these two lines
 call vundle#end()
@@ -67,6 +64,9 @@ colorscheme solarized
 autocmd BufNewFile,BufRead Gemfile set filetype=ruby
 autocmd BufNewFile,BufRead *.gemfile set filetype=ruby
 
+" Syntax highlighting for Scala
+autocmd BufRead,BufNewFile *.scala set filetype=scala
+
 " Activate Syntax highlighting for handlebars. This is from a vundle plugin
 let g:mustache_abbreviations = 1
 
@@ -90,6 +90,10 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set grepprg=ack
 set grepformat=%f:%l:%m
 
+" Set lazyredraw. Scrolling is horrible with vertical splits on external
+" monitor. This tries to reduce the number of redraws when scrolling
+":set lazyredraw
+
 " Disable F1 so mashing esc is easier
 map <F1> <Esc>
 imap <F1> <Esc>
@@ -97,8 +101,19 @@ imap <F1> <Esc>
 " Expand current directory with '%%'.
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 
+" Copy absolute path of working file to clipboard.
+cnoremap fp let @+ = expand('%:p')<cr>
+
 " Remove trailing white space on save
-autocmd BufWritePre * :%s/\s\+$//e
+" autocmd BufWritePre * :%s/\s\+$//e
+function! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 " CtrlSF mappings
 nmap <C-f> <Plug>CtrlSFPrompt
@@ -111,6 +126,13 @@ let g:ctrlsf_default_root = 'project'
 " Use files from git, including untracked. Without this the plugin is too slow
 " on large repos.
 let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
+
+" Use ag for Vimgrep
+let g:ackprg = "ag --vimgrep"
+
+" This prevents the JSON syntax highlighter from "concealing" quotes in json
+" files
+let g:vim_json_syntax_conceal = 0
 
 " NerdTree Settings
 " Open NerdTree at startup
