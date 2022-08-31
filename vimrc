@@ -57,7 +57,7 @@ if has("gui_running")
 end
 
 set t_Co=256
-set background=light
+set background=dark
 colorscheme solarized
 
 " Syntax highlighting for Gemfiles
@@ -138,6 +138,10 @@ let g:vim_json_syntax_conceal = 0
 " Open NerdTree at startup
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" Set regular expression engine. Vim was having issues with typescript files
+" and this appeared to fix the issue
+set re=2
 
 " Open with Ctrl+n
 map <C-n> :NERDTreeToggle<CR>
