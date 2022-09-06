@@ -33,7 +33,7 @@ setopt PROMPT_SUBST
 #export PROMPT='$vcs_info_msg_0_ %# '
 PROMPT='${vcs_info_msg_0_} $ '
 
-export PATH="/usr/local/bin:/usr/local/sbin:~/bin:~/.rbenv/bin:$PATH"
+export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 
 # Clean up history and increase default size
 setopt HIST_IGNORE_ALL_DUPS
@@ -50,7 +50,8 @@ setopt INC_APPEND_HISTORY
 export HISTTIMEFORMAT="[%F %T] "
 setopt EXTENDED_HISTORY
 
-
+# Version Managers
+export PATH="$HOME/.rbenv/bin:$PATH"
 if command -v rbenv &> /dev/null
 then
   eval "$(rbenv init -)"
@@ -59,5 +60,18 @@ else
 fi
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+if ! command -v nvm &> /dev/null
+then
+  echo "Need to install nvm: https://github.com/nvm-sh/nvm"
+fi
+
+if command -v pyenv &> /dev/null
+then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+else
+  echo "Need to install pyenv: https://github.com/pyenv/pyenv"
+fi
