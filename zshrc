@@ -13,6 +13,7 @@ precmd() { vcs_info }
 autoload -Uz add-zsh-hook
 
 # Format the vcs_info_msg_0_ variable
+zstyle ':vcs_info:*' nvcsformats '%~'
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' formats "%{$reset_color%}%r/%S %F{green}%c%u%b%f"
 zstyle ':vcs_info:*' actionformats "%{$reset_color%}%r/%S %F{green}%c%u%b%f %a"
