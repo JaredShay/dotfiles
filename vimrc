@@ -30,6 +30,8 @@ Plugin 'elzr/vim-json'
 " Lots of good go stuff
 Plugin 'fatih/vim-go'
 
+Plugin 'mphe/vim-gdscript4'
+
 " All plugins must be added before these two lines
 call vundle#end()
 filetype plugin indent on
@@ -104,6 +106,9 @@ cnoremap %% <C-R>=expand('%:h').'/'<cr>
 " Copy absolute path of working file to clipboard.
 cnoremap fp let @+ = expand('%:p')<cr>
 
+" Clear highlighting
+nnoremap <Esc><Esc> :nohlsearch<CR>
+
 " Remove trailing white space on save
 " autocmd BufWritePre * :%s/\s\+$//e
 function! <SID>StripTrailingWhitespaces()
@@ -142,6 +147,10 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 " Set regular expression engine. Vim was having issues with typescript files
 " and this appeared to fix the issue
 set re=2
+
+" 10ms timeout len. This is to prevent Vim waiting for key sequences to be esc
+" secquences. E.g. Hiting shift+o after exiting insert mode.
+set ttimeoutlen=10
 
 " Open with Ctrl+n
 map <C-n> :NERDTreeToggle<CR>

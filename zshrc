@@ -1,5 +1,8 @@
 export EDITOR=vim
 
+# Load the antigen zsh plugin manager
+source $(brew --prefix)/share/antigen/antigen.zsh
+
 # load zsh completions
 autoload -Uz compinit && compinit
 
@@ -51,6 +54,18 @@ setopt INC_APPEND_HISTORY
 export HISTTIMEFORMAT="[%F %T] "
 setopt EXTENDED_HISTORY
 
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+# Autoenv executes an `.in` file upon entering a directory (or sub-directory)
+# and an `.out` file upon exiting.
+antigen bundle zpm-zsh/autoenv
+antigen apply
+
+alias be="bundle exec"
+
+# set .local on path
+export PATH="$HOME/.local/bin:$PATH"
+
 # Version Managers
 export PATH="$HOME/.rbenv/bin:$PATH"
 if command -v rbenv &> /dev/null
@@ -76,3 +91,5 @@ then
 else
   echo "Need to install pyenv: https://github.com/pyenv/pyenv"
 fi
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+export PATH="$PATH/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
