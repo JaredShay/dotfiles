@@ -18,3 +18,13 @@ Bad:  `added oauth` / `Adding OAuth authentication to the user login system so u
 ## Multi-paragraph body
 Use blank lines between paragraphs. Each paragraph should address
 a distinct aspect of the change.
+
+## Validation
+Before committing, run the validator and fix all errors before proceeding:
+
+  cat <<'EOF' | ~/.claude/scripts/validate-commit-msg.sh
+  <your commit message here>
+  EOF
+
+Output will be "OK" or a list of errors with exact line numbers and lengths.
+Do not commit until the script outputs "OK".
