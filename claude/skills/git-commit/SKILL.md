@@ -1,3 +1,8 @@
+---
+name: git-commit
+description: Use when writing or running any git commit message. Auto-invoke when the user asks to commit, stage and commit, or write a commit message.
+---
+
 # Git Commit Messages
 
 ## Subject Line

@@ -1,3 +1,8 @@
+---
+name: system-specs
+description: Use when writing or modifying system specs. Auto-invoke for any file in spec/system/.
+---
+
 # System Specs (Capybara/Cuprite)
 
 ## Pre-Action Assertions
