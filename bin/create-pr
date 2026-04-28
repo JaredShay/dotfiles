@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Guard clause: Ensure the script is running in a Git repository
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "Error: This script must be run inside a Git repository."
+  exit 1
+fi
+
+# Get the current branch name
+current_branch=$(git branch --show-current)
+
+# Guard clause: Ensure a branch is checked out
+if [ -z "$current_branch" ]; then
+  echo "Error: No branch is currently checked out."
+  exit 1
+fi
+
+# Push the current branch and set the upstream
+push_output=$(git push origin -u "$current_branch" 2>&1)
+
+# Parse the output to find the pull request URL
+pr_url=$(echo "$push_output" | sed -n 's|.*\(https://github\.com/[^ ]*/pull/new/[^ ]*\).*|\1|p')
+
+if [ -n "$pr_url" ]; then
+  echo "Pull request URL: $pr_url"
+  # Open the pull request URL in the default browser
+  open "$pr_url"
+else
+  echo "Pull request URL not found in the output."
+  echo "Git output:"
+  echo "$push_output"
+  exit 1
+fi

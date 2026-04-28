@@ -37,7 +37,8 @@ setopt PROMPT_SUBST
 #export PROMPT='$vcs_info_msg_0_ %# '
 PROMPT='${vcs_info_msg_0_} $ '
 
-export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
+export DOTFILES="$HOME/Code/dotfiles"
+export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$DOTFILES/bin:$PATH"
 
 # Clean up history and increase default size
 setopt HIST_IGNORE_ALL_DUPS

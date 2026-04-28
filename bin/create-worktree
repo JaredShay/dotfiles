@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Guard clause: Ensure the script is running in a Git repository
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "Error: This script must be run inside a Git repository."
+  exit 1
+fi
+
+# Guard clause: Ensure a branch name was provided
+if [ -z "$1" ]; then
+  echo "Usage: create-worktree <branch-name>"
+  exit 1
+fi
+
+branch_name="$1"
+
+# Find the repo root and its parent directory
+repo_root=$(git rev-parse --show-toplevel)
+repo_name=$(basename "$repo_root")
+parent_dir=$(dirname "$repo_root")
+
+# Find or create the sibling wt-* directory
+wt_dir=$(find "$parent_dir" -maxdepth 1 -type d -name 'wt-*' | head -n 1)
+
+if [ -z "$wt_dir" ]; then
+  # No wt-* directory exists; create one based on the repo name
+  # e.g. if repo is "BREE", create "wt-BREE"
+  wt_dir="$parent_dir/wt-$repo_name"
+  echo "No sibling wt-* directory found. Creating: $wt_dir"
+  mkdir -p "$wt_dir"
+fi
+
+worktree_path="$wt_dir/$branch_name"
+
+# Check if the worktree path already exists
+if [ -d "$worktree_path" ]; then
+  # Check if it's actually registered as a worktree
+  if git worktree list | grep -q "$worktree_path"; then
+    echo "Worktree already exists at: $worktree_path"
+    echo "No action taken."
+    exit 0
+  else
+    echo "Error: Directory exists at $worktree_path but is not a registered worktree."
+    exit 1
+  fi
+fi
+
+# Check if the branch already exists (locally or remotely)
+if git show-ref --verify --quiet "refs/heads/$branch_name"; then
+  echo "Branch '$branch_name' exists locally. Creating worktree from existing branch."
+  git worktree add "$worktree_path" "$branch_name"
+elif git ls-remote --exit-code --heads origin "$branch_name" >/dev/null 2>&1; then
+  echo "Branch '$branch_name' exists on remote. Creating worktree tracking origin/$branch_name."
+  git worktree add "$worktree_path" -b "$branch_name" --track "origin/$branch_name"
+else
+  echo "Creating new branch '$branch_name' and worktree."
+  git worktree add -b "$branch_name" "$worktree_path"
+fi
+
+echo "Worktree ready at: $worktree_path"
+echo "cd $worktree_path"

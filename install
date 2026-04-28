@@ -1,18 +1,34 @@
 #!/usr/bin/env ruby
 
-# from http://errtheblog.com/posts/89-huba-huba
+# based off of http://errtheblog.com/posts/89-huba-huba
 
+dotfiles = File.expand_path('..', __FILE__)
 home = File.expand_path('~')
 
 Dir['*'].each do |file|
   next if file =~ /install/
-  if file =~ /bin/
-    target = File.join(home, file)
-  else
-    target = File.join(home, ".#{file}")
-  end
+  next if file == 'bin'
+  next if file == 'external_repos'
 
-  unless File.exists?(target)
+  target = File.join(home, ".#{file}")
+
+  unless File.exist?(target)
     `ln -s #{File.expand_path file} #{target}`
+  end
+end
+
+# Clone external git repos that live outside the dotfiles repo.
+# Add entries to ./external_repos to extend this.
+external_repos_file = File.join(dotfiles, 'external_repos')
+if File.exist?(external_repos_file)
+  File.readlines(external_repos_file).each do |line|
+    line.strip!
+    next if line.empty? || line.start_with?('#')
+    rel_path, url = line.split(' ', 2)
+    dest = File.join(dotfiles, rel_path)
+    unless File.directory?(dest)
+      puts "Cloning #{url} -> #{dest}"
+      system("git clone #{url} #{dest}")
+    end
   end
 end
