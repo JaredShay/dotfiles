@@ -20,7 +20,8 @@
       "Bash(git diff *)",
       "Bash(git branch *)",
       "Bash(bundle exec rspec *)",
-      "Bash(rails routes *)"
+      "Bash(rails routes *)",
+      "Bash(cat <<'EOF' | ~/.claude/scripts/validate-commit-msg.sh*)"
     ],
     "deny": [
       "Bash(rm -rf *)",
