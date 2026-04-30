@@ -14,14 +14,17 @@
       "Bash(find *)",
       "Bash(ls *)",
       "Bash(cat *)",
+      "Bash(printf *)",
       "Bash(rg *)",
       "Bash(git status)",
       "Bash(git log *)",
       "Bash(git diff *)",
       "Bash(git branch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
       "Bash(bundle exec rspec *)",
       "Bash(rails routes *)",
-      "Bash(cat <<'EOF' | ~/.claude/scripts/validate-commit-msg.sh*)"
+      "Bash(~/.claude/scripts/validate-commit-msg.sh*)"
     ],
     "deny": [
       "Bash(rm -rf *)",

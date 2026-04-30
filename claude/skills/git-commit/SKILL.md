@@ -24,12 +24,19 @@ Bad:  `added oauth` / `Adding OAuth authentication to the user login system so u
 Use blank lines between paragraphs. Each paragraph should address
 a distinct aspect of the change.
 
+## Committing
+
+IMPORTANT: Use ANSI-C quoting (`$'...'`) for the commit message — never use a heredoc or `$()` command substitution. Encode newlines as `\n`:
+
+  git commit -m $'Subject line\n\nBody text.\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>'
+
 ## Validation
-Before committing, run the validator and fix all errors before proceeding:
+Before committing, run the validator and fix all errors before proceeding.
 
-  cat <<'EOF' | ~/.claude/scripts/validate-commit-msg.sh
-  <your commit message here>
-  EOF
+IMPORTANT: Always use `printf` — never use a heredoc (`cat <<'EOF'`) or `$()`. The command MUST be a single line.
 
+  printf 'subject line\n\nbody line 1\nbody line 2\n' | ~/.claude/scripts/validate-commit-msg.sh
+
+Encode all newlines as `\n` in the printf format string.
 Output will be "OK" or a list of errors with exact line numbers and lengths.
 Do not commit until the script outputs "OK".
