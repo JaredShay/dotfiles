@@ -54,7 +54,7 @@ elif git ls-remote --exit-code --heads origin "$branch_name" >/dev/null 2>&1; th
   git worktree add "$worktree_path" -b "$branch_name" --track "origin/$branch_name"
 else
   echo "Creating new branch '$branch_name' and worktree."
-  git worktree add -b "$branch_name" "$worktree_path"
+  git worktree add -b "$branch_name" "$worktree_path" main
 fi
 
 echo "Worktree ready at: $worktree_path"
