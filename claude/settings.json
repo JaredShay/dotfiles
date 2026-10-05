@@ -18,7 +18,11 @@
       "Bash(git commit *)",
       "Bash(bundle exec rspec *)",
       "Bash(rails routes *)",
-      "Bash(~/.claude/scripts/validate-commit-msg.sh*)"
+      "Bash(~/.claude/scripts/validate-commit-msg.sh*)",
+      "Bash(/Users/jaredshay/.claude/plugins/cache/claude-plugins-official/superpowers/*)",
+      "mcp__executor__skills",
+      "mcp__executor__execute",
+      "mcp__executor__resume"
     ],
     "deny": [
       "Bash(rm -rf *)",
