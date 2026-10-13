@@ -7,6 +7,8 @@ const tick = atom({ plugin: 'context-meter', key: 'tick' } as const, 0)
 // The main loop's effort, last seen on a turn step; the API has no getter for it.
 const effort = atom({ plugin: 'context-meter', key: 'effort' } as const, null)
 
+const LIVE = ['pending', 'running', 'waiting']
+
 const LABELS: Record<string, string> = { five_hour: '5h', seven_day: '7d', spend_limit: 'spend' }
 
 export const levelOf = (p: number) => (p >= 85 ? 'error' : p >= 60 ? 'warning' : 'success')
@@ -14,7 +16,15 @@ export const levelOf = (p: number) => (p >= 85 ? 'error' : p >= 60 ? 'warning' :
 const bump = ($: EngineInterface) => update($, tick, n => n + 1)
 
 export const register: Register = on => {
+  let lastCount = 0
+
   on('session.start', async ($, e, next) => {
+    // Redraw when the number of live subagents changes.
+    $.clock.every(1000, async () => {
+      const count = (await $.agent.list()).filter(a => LIVE.includes(a.status)).length
+      if (count !== lastCount) await bump($)
+      lastCount = count
+    })
     const result = await next(e)
     await bump($)
 
@@ -41,6 +51,7 @@ export const register: Register = on => {
     const level = await read($, effort)
     const model = await $.session.model()
     const { context, rateLimits } = await $.session.usage()
+    const agents = (await $.agent.list()).filter(a => LIVE.includes(a.status)).length
     const p = context.percent
 
     if (e.props.hasSurvey) {
@@ -52,6 +63,7 @@ export const register: Register = on => {
     const limits = new Map<string, number | undefined>(['five_hour', 'seven_day'].map(k => [k, undefined]))
     for (const r of rateLimits) limits.set(r.kind, r.percentUsed)
     const meters = [
+      { key: 'agents', label: 'sub-agt', count: agents },
       { key: 'cxt', label: 'cxt', percent: p },
       ...[...limits].map(([kind, percent]) => ({ key: kind, label: LABELS[kind] ?? kind, percent })),
     ]
@@ -63,7 +75,9 @@ export const register: Register = on => {
             <Text key={m.key}>
               {i > 0 ? <Text dimColor> · </Text> : null}
               <Text dimColor>{m.label} </Text>
-              {m.percent === undefined ? (
+              {m.count !== undefined ? (
+                <Text color={m.count > 0 ? 'cyan' : undefined} dimColor={m.count === 0} bold={m.count > 0}>{m.count}</Text>
+              ) : m.percent === undefined ? (
                 <Text dimColor>–</Text>
               ) : (
                 <Text color={levelOf(m.percent)} bold={m.percent >= 85}>{Math.round(m.percent)}%</Text>

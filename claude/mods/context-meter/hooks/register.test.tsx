@@ -21,6 +21,8 @@ describe('context-meter', () => {
   test('band shows context, limits and model', async ($, on) => {
     on('session.usage', () => ({ value: usageAt(90) }))
     on('session.model', () => ({ value: 'claude-sonnet-5-5' }))
+    on('agent.list', () => ({ value: [] }))
+    on('clock.now', () => ({ value: 0 }))
 
     for (const surface of ['terminal', 'desktop'] as const) {
       const ui = await $.ui.mount({
@@ -39,6 +41,8 @@ describe('context-meter', () => {
   test('band shows a placeholder before the first reading', async ($, on) => {
     on('session.usage', () => ({ value: usageAt(undefined) }))
     on('session.model', () => ({ value: 'claude-sonnet-5-5' }))
+    on('agent.list', () => ({ value: [] }))
+    on('clock.now', () => ({ value: 0 }))
     const ui = await $.ui.mount({
       plugin: 'context-meter',
       surface: 'terminal',
