@@ -1,6 +1,6 @@
 {
   "env": {
-    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/context-meter"
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/context-meter:~/.claude/mods/compaction-guard"
   },
   "permissions": {
     "defaultMode": "auto",

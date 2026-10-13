@@ -1,0 +1,5 @@
+{
+  "name": "compaction-guard",
+  "version": "0.1.0",
+  "description": "Compacts the main loop at 65% context (or on demand) with a handoff-focused summary, then resumes the work automatically"
+}
