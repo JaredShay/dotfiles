@@ -4,25 +4,10 @@ import type { EngineInterface, Register } from 'claude-code'
 // Bumped whenever the context window may have moved; the band reads it so each bump redraws it.
 const tick = atom({ plugin: 'context-meter', key: 'tick' } as const, 0)
 
-const CELLS = 24
+// The main loop's effort, last seen on a turn step; the API has no getter for it.
+const effort = atom({ plugin: 'context-meter', key: 'effort' } as const, null)
 
-// Green → yellow → orange → red, by how far along the bar a cell sits.
-const STOPS: Array<[number, [number, number, number]]> = [
-  [0, [80, 200, 120]],
-  [0.6, [235, 200, 60]],
-  [0.85, [240, 120, 50]],
-  [1, [230, 60, 70]],
-]
-
-export const colorAt = (t: number): string => {
-  const i = Math.max(1, STOPS.findIndex(([at]) => at >= t))
-  const [a, from] = STOPS[i - 1]
-  const [b, to] = STOPS[i]
-  const k = b === a ? 0 : (t - a) / (b - a)
-  const hex = from.map((c, j) => Math.round(c + (to[j] - c) * k).toString(16).padStart(2, '0'))
-
-  return `#${hex.join('')}`
-}
+const LABELS: Record<string, string> = { five_hour: '5h', seven_day: '7d', spend_limit: 'spend' }
 
 export const levelOf = (p: number) => (p >= 85 ? 'error' : p >= 60 ? 'warning' : 'success')
 
@@ -37,6 +22,7 @@ export const register: Register = on => {
   })
 
   on('turn.step', async function* ($, e, next) {
+    if (e.agentId === undefined) await update($, effort, () => (e.effort === undefined ? null : String(e.effort)))
     const result = yield* next(e)
     if (e.agentId === undefined) await bump($)
 
@@ -52,29 +38,41 @@ export const register: Register = on => {
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     await read($, tick)
-    const { context } = await $.session.usage()
+    const level = await read($, effort)
+    const model = await $.session.model()
+    const { context, rateLimits } = await $.session.usage()
     const p = context.percent
 
-    if (e.props.hasSurvey || p === undefined) {
+    if (e.props.hasSurvey) {
       return next(e)
     }
 
     const { Box, Text } = $.ui.resolve(e)
-    const filled = Math.round((Math.min(p, 100) / 100) * CELLS)
-    const cells = Array.from({ length: CELLS }, (_, i) =>
-      i < filled ? (
-        <Text color={colorAt(i / (CELLS - 1))}>█</Text>
-      ) : (
-        <Text dimColor>░</Text>
-      ),
-    )
+    // Rate limits only arrive with the first API response, so keep the main windows as placeholders until then.
+    const limits = new Map<string, number | undefined>(['five_hour', 'seven_day'].map(k => [k, undefined]))
+    for (const r of rateLimits) limits.set(r.kind, r.percentUsed)
+    const meters = [
+      { key: 'cxt', label: 'cxt', percent: p },
+      ...[...limits].map(([kind, percent]) => ({ key: kind, label: LABELS[kind] ?? kind, percent })),
+    ]
 
     return (
-      <Box>
-        <Text dimColor>context </Text>
-        <Text>{cells}</Text>
-        <Text color={levelOf(p)} bold={p >= 85}>
-          {' '}{p}%{p >= 85 ? ' · consider /compact' : ''}
+      <Box flexDirection="column" alignItems="flex-end">
+        <Box>
+          {meters.map((m, i) => (
+            <Text key={m.key}>
+              {i > 0 ? <Text dimColor> · </Text> : null}
+              <Text dimColor>{m.label} </Text>
+              {m.percent === undefined ? (
+                <Text dimColor>–</Text>
+              ) : (
+                <Text color={levelOf(m.percent)} bold={m.percent >= 85}>{Math.round(m.percent)}%</Text>
+              )}
+            </Text>
+          ))}
+        </Box>
+        <Text dimColor>
+          {model}{level === null ? '' : ` · ${level}`}
         </Text>
       </Box>
     )
