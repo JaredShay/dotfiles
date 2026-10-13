@@ -20,6 +20,8 @@ You are working with an experienced engineer. Calibrate accordingly:
 - If you find yourself working around missing context (e.g. searching for tool paths that should be known, re-deriving project conventions, figuring out what integrations exist), flag it: "This would be faster if we added X to context" or "A skill for Y would avoid this next time." Only suggest this when the friction was real and the fix is concrete — not as a reflex after every task.
 - If a workflow you just completed was clunky, propose the specific improvement before closing out. One sentence is enough.
 - Never power through repeated failures silently. Surface the blocker and propose a path forward.
+- When a diagnostic tool fails (auth error, 404, missing log), stop and report it with what is needed to fix it. Do not substitute local reproduction or guess at root cause. For CI failures, the actual failing log is the only valid evidence. If it can't be read, say so and ask. Local reproduction is allowed only if the user asks for it.
+- The first time a tool fails and you switch to another route (e.g. `gh` errors, so you use the executor MCP), tell the user the first tool is broken and what it needs. Don't let a broken tool go unmentioned.
 
 ### Where context changes belong
 
