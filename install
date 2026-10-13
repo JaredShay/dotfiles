@@ -5,15 +5,39 @@
 dotfiles = File.expand_path('..', __FILE__)
 home = File.expand_path('~')
 
-Dir['*'].each do |file|
-  next if file =~ /install/
-  next if file == 'bin'
-  next if file == 'external_repos'
+# Only what is listed here is linked; everything else in the repo stays put.
+# Each entry links to ~/.<name>.
+HOME_LINKS = %w[bash bash_profile bashrc vimrc zshrc]
 
-  target = File.join(home, ".#{file}")
+# Each entry in ./claude links to ~/.claude/<name>. ~/.claude also holds
+# Claude Code's own runtime data (sessions, history, caches), so it stays a
+# real directory rather than a link to ./claude.
+CLAUDE_LINKS = %w[CLAUDE.md commands mods scripts settings.json skills]
 
-  unless File.exist?(target)
-    `ln -s #{File.expand_path file} #{target}`
+def link(source, target)
+  if !File.exist?(source)
+    puts "Skipping #{target}: #{source} is listed but missing"
+  elsif File.symlink?(target)
+    return
+  elsif File.exist?(target)
+    puts "Skipping #{target}: it exists and is not a symlink"
+  else
+    `ln -s #{source} #{target}`
+  end
+end
+
+HOME_LINKS.each do |name|
+  link(File.join(dotfiles, name), File.join(home, ".#{name}"))
+end
+
+claude_home = File.join(home, '.claude')
+if File.symlink?(claude_home)
+  puts "#{claude_home} is a symlink; replace it with a real directory so Claude Code's runtime data stays out of this repo"
+else
+  Dir.mkdir(claude_home) unless File.directory?(claude_home)
+
+  CLAUDE_LINKS.each do |name|
+    link(File.join(dotfiles, 'claude', name), File.join(claude_home, name))
   end
 end
 

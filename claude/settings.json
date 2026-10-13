@@ -48,6 +48,9 @@
       "Bash(git push --force *)"
     ]
   },
+  "env": {
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/context-meter"
+  },
   "tui": "fullscreen",
   "enabledPlugins": {
     "ruby-lsp@claude-plugins-official": true,

@@ -1,0 +1,6 @@
+{
+  "name": "context-meter",
+  "version": "0.1.0",
+  "description": "A context-window bar above the prompt that shifts green to yellow to red as it fills",
+  "types": "./types/index.d.ts"
+}
