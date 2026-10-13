@@ -33,6 +33,12 @@ When you learn something worth preserving, decide where it goes before writing i
 
 When something is clearly global, update `~/.claude/CLAUDE.md` directly. When something is clearly project-local, propose adding it to the repo's `CLAUDE.md`. When it's agent-specific, write it to memory.
 
+## Testing
+- Never run a full test suite locally without asking first. Run targeted tests only: the files/examples you changed or directly affect.
+- Full-suite verification happens in CI. After pushing/opening a PR, watch the run (`gh run watch`, or the github-mcp skill) and read failures from there.
+- This overrides skills (e.g. verification-before-completion, executing-plans, finishing-a-development-branch): "verified" means targeted tests locally plus a green CI run, not a local full run. Pass this rule along when dispatching subagents.
+- How PRs are opened and which CI runs is repo-specific. Follow the repo's CLAUDE.md; if it doesn't say, ask once.
+
 ## Git Commits
 Before writing or running any git commit, read and follow ~/.claude/skills/git-commit.md.
 
