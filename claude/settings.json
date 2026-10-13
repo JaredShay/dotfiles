@@ -3,7 +3,7 @@
     "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/context-meter"
   },
   "permissions": {
-    "defaultMode": "default",
+    "defaultMode": "auto",
     "allow": [
       "Grep",
       "Glob",
@@ -49,7 +49,9 @@
     ],
     "deny": [
       "Bash(rm -rf *)",
-      "Bash(git push --force *)"
+      "Bash(git push --force *)",
+      "Bash(heroku)",
+      "Bash(heroku *)"
     ]
   },
   "enabledPlugins": {

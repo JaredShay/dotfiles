@@ -2,3 +2,6 @@ claude/skills/claude-code_rails-load-defaults-skill/
 
 # Written by Claude Code each time it loads a mod
 claude/mods/*/.claude-plugin/types/
+
+# Synced by the Claude desktop app (anthropic-skills)
+claude/skills/synced/
