@@ -13,17 +13,32 @@ const LABELS: Record<string, string> = { five_hour: '5h', seven_day: '7d', spend
 
 export const levelOf = (p: number) => (p >= 85 ? 'error' : p >= 60 ? 'warning' : 'success')
 
+// Compact time left, two units at most: 3d4h, 2h14m, 45m.
+export const untilReset = (resetsAt: string | undefined, now: number) => {
+  if (resetsAt === undefined) return undefined
+  const mins = Math.max(0, Math.ceil((Date.parse(resetsAt) - now) / 60_000))
+  if (Number.isNaN(mins)) return undefined
+  const d = Math.floor(mins / 1440)
+  const h = Math.floor((mins % 1440) / 60)
+  const m = mins % 60
+  return d > 0 ? `${d}d${h}h` : h > 0 ? `${h}h${m}m` : `${m}m`
+}
+
 const bump = ($: EngineInterface) => update($, tick, n => n + 1)
 
 export const register: Register = on => {
   let lastCount = 0
+  let lastMinute = 0
 
   on('session.start', async ($, e, next) => {
     // Redraw when the number of live subagents changes.
     $.clock.every(1000, async () => {
       const count = (await $.agent.list()).filter(a => LIVE.includes(a.status)).length
-      if (count !== lastCount) await bump($)
+      const minute = Math.floor((await $.clock.now()) / 60_000)
+      // Redraw each minute so the reset countdowns stay current.
+      if (count !== lastCount || minute !== lastMinute) await bump($)
       lastCount = count
+      lastMinute = minute
     })
     const result = await next(e)
     await bump($)
@@ -51,6 +66,7 @@ export const register: Register = on => {
     const level = await read($, effort)
     const model = await $.session.model()
     const { context, rateLimits } = await $.session.usage()
+    const now = await $.clock.now()
     const agents = (await $.agent.list()).filter(a => LIVE.includes(a.status)).length
     const p = context.percent
 
@@ -60,12 +76,12 @@ export const register: Register = on => {
 
     const { Box, Text } = $.ui.resolve(e)
     // Rate limits only arrive with the first API response, so keep the main windows as placeholders until then.
-    const limits = new Map<string, number | undefined>(['five_hour', 'seven_day'].map(k => [k, undefined]))
-    for (const r of rateLimits) limits.set(r.kind, r.percentUsed)
+    const limits = new Map<string, { percent?: number; reset?: string }>(['five_hour', 'seven_day'].map(k => [k, {}]))
+    for (const r of rateLimits) limits.set(r.kind, { percent: r.percentUsed, reset: r.kind === 'five_hour' ? untilReset(r.resetsAt, now) : undefined })
     const meters = [
       { key: 'agents', label: 'sub-agt', count: agents },
       { key: 'cxt', label: 'cxt', percent: p },
-      ...[...limits].map(([kind, percent]) => ({ key: kind, label: LABELS[kind] ?? kind, percent })),
+      ...[...limits].map(([kind, { percent, reset }]) => ({ key: kind, label: LABELS[kind] ?? kind, percent, reset })),
     ]
 
     return (
@@ -82,6 +98,7 @@ export const register: Register = on => {
               ) : (
                 <Text color={levelOf(m.percent)} bold={m.percent >= 85}>{Math.round(m.percent)}%</Text>
               )}
+              {m.reset === undefined ? null : <Text dimColor> {m.reset}</Text>}
             </Text>
           ))}
         </Box>
