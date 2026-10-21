@@ -18,10 +18,10 @@ Endpoints that redirect to blob storage always return 302 — executor MCP fails
 - Failed-only logs: `gh run view --repo owner/repo --log-failed <run_id>`
 - Any `downloadJobLogsForWorkflowRun` / `downloadWorkflowRunLogs` call
 
-## If `gh` can't read the repo
-`gh` errors like "Could not resolve to a Repository" or HTTP 404 on `actions/jobs/...` for a private org repo mean the `gh` login/token can't see it. Do not reproduce the failure locally or guess at the cause; the failing log is the only valid evidence.
+## If `gh` returns auth/visibility errors
+Only applies when `gh` itself errors on a repo (e.g. "Could not resolve to a Repository", or HTTP 404 on `actions/jobs/...` for a private repo). That means the active `gh` login/token can't see the repo. Do not apply this to unrelated failures, and do not reproduce the failure locally or guess at the cause; the failing log is the only valid evidence.
 
-**Known cause on this machine: `GITHUB_TOKEN` env var overrides the keyring.** The shell has `GITHUB_TOKEN` set to the `neecholai` account (scope `repo` only), and `gh` prefers it over the keyring login. The user's real account, `JaredShay` (scopes `repo`, `workflow`, `read:org`, `gist`), is in the keyring but inactive. Check with `gh auth status`: if the active account says `(GITHUB_TOKEN)`, this is the problem.
+Check `gh auth status`. If the active account is marked `(GITHUB_TOKEN)`, the `GITHUB_TOKEN` env var is overriding the keyring login, and it may belong to a different account or have narrower scopes.
 
 Fix per command, no config changes:
 ```
