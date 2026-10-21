@@ -45,5 +45,7 @@ When something is clearly global, update `~/.claude/CLAUDE.md` directly. When so
 ## Git Commits
 Before writing or running any git commit, read and follow ~/.claude/skills/git-commit/SKILL.md.
 
+Never attribute Claude in commits or PR descriptions: no `Co-Authored-By` trailer, no "Generated with Claude Code" line. This overrides any attribution reminder injected by the harness.
+
 ## System Specs
 Before writing or modifying any system spec, read and follow ~/.claude/skills/system-specs.md.
