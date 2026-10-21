@@ -6,6 +6,7 @@ All MCP setups go through executor:
 - Always `return` from execute code; `result` is null otherwise.
 - Use `execute` for chained calls or filtering large results; use `call` for one-off independent calls with correct object/array format.
 - Some integrations expose meta-tools (search_X_tools / execute_X_tool); follow their hints.
+- Linear: `search` doesn't surface its tools. Call `tools["linear-mcp"].get_issue` (and siblings) directly via `execute`.
 
 If executor MCP tools are unavailable (not in tool list), it needs authentication — run the `/mcp` slash command in Claude Code to open the browser auth flow. Do NOT try to diagnose via natural language or config file exploration.
 
