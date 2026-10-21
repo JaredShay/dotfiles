@@ -28,7 +28,7 @@ a distinct aspect of the change.
 
 IMPORTANT: Use ANSI-C quoting (`$'...'`) for the commit message — never use a heredoc or `$()` command substitution. Encode newlines as `\n`:
 
-  git commit -m $'Subject line\n\nBody text.\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>'
+  git commit -m $'Subject line\n\nBody text.'
 
 ## Validation
 Before committing, run the validator and fix all errors before proceeding.
