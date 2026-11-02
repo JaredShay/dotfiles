@@ -1,12 +1,12 @@
 ## MCP
 
 All MCP setups go through executor:
-- At the start of any session that will use executor, load the skill first: `mcp__executor__skills({ items: ["executor:executor"] })`. This is the operating manual — without it, tool usage will be incorrect.
+- At the start of any session that will use executor, load the skill first: `mcp__executor__skills({ app: "executor", name: "executor" })`. It can fail once with a transient ECONNRESET; retry once. This is the operating manual — without it, tool usage will be incorrect.
 - Never guess tool paths. Always `mcp__executor__search({ query: "<service>" })` first and use the returned `path` exactly.
 - Always `return` from execute code; `result` is null otherwise.
 - Use `execute` for chained calls or filtering large results; use `call` for one-off independent calls with correct object/array format.
 - Some integrations expose meta-tools (search_X_tools / execute_X_tool); follow their hints.
-- Linear: `search` doesn't surface its tools. Call `tools["linear-mcp"].get_issue` (and siblings) directly via `execute`.
+- Linear: a bare `search` doesn't surface its tools. Use the bracket path `tools["linear-mcp"].get_issue` (siblings: `list_comments`, `extract_images`) via `execute` or `call`; `describe` works with that exact path. Every input is `{ accountId, input: {...} }`, so bare `{ id }` fails validation. `search({ namespace: "linear-mcp", query: "get issue" })` lists the account IDs (tanooki, cctv, decked-out; Quadrant/QUA is tanooki). `get_issue` takes `input: { id: "QUA-123" }` and `list_comments` takes `input: { issueId }`. Screenshots in comments: pass the comment body to `extract_images`; the image comes back as base64 in a saved tool-result file, so decode it to a PNG with `python3 -I` and `Read` it.
 
 If executor MCP tools are unavailable (not in tool list), it needs authentication — run the `/mcp` slash command in Claude Code to open the browser auth flow. Do NOT try to diagnose via natural language or config file exploration.
 
